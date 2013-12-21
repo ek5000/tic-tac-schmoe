@@ -12,5 +12,12 @@ namespace tic_tac_schmoe.Logic
         {
             throw new NotImplementedException();
         }
+
+        public Piece Winner { get; set; }
+
+        internal bool IsFull()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
