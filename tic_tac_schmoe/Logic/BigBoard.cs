@@ -11,6 +11,7 @@ namespace tic_tac_schmoe.Logic
         private Piece Victor { get; set; }
         private SmallBoard[,] SmallBoards { get; set; }
         private int RowSize { get; set; }
+        private int NumberOfBoards { get { return RowSize * RowSize; } }
         private Piece NextPieceTurn { get; set; }
         private int NextX { get; set; }
         private int NextY { get; set; }
@@ -28,63 +29,66 @@ namespace tic_tac_schmoe.Logic
             this.SmallBoardsWon = 0;
 
             SetUpSmallBoards(this.SmallBoards, rowSize);
-            SetUpVictoryArrays(this.VictoryArrays);
+            SetUpVictoryArrays(this.VictoryArrays, rowSize);
         }
 
-        private void SetUpVictoryArrays(Dictionary<Piece, int[]> victoryArrays)
+        private static void SetUpVictoryArrays(Dictionary<Piece, int[]> victoryArrays, int rowSize)
         {
-            victoryArrays.Add(Piece.Cross, new int[RowSize * 2 + 2]);
-            victoryArrays.Add(Piece.Knot, new int[RowSize * 2 + 2]);
+            victoryArrays.Add(Piece.Cross, new int[rowSize * 2 + 2]);
+            victoryArrays.Add(Piece.Knot, new int[rowSize * 2 + 2]);
         }
         private static void SetUpSmallBoards(SmallBoard[,] smallBoards, int rowSize)
         {
             for (int i = 0; i < rowSize; ++i)
                 for (int j = 0; j < rowSize; ++j)
-                    smallBoards[i, j] = new SmallBoard();
+                    smallBoards[i, j] = new SmallBoard(rowSize);
         }
         public bool PlayPiece(Turn turn)
         {
             SmallBoard relevantSmallBoard = SmallBoards[turn.BigX, turn.BigY];
-            Piece formerBoardHolder = relevantSmallBoard.Winner;
+            Piece formerBoardHolder = relevantSmallBoard.Victor;
             bool successful = relevantSmallBoard.PlayPiece(turn);
+            Piece newBoardHolder = relevantSmallBoard.Victor;
             if (successful)
             {
-                // Set up next X and Y
-                SmallBoard sentTo = SmallBoards[turn.SmallX, turn.SmallY];
-                if (sentTo.IsFull())
-                {
-                    NextX = -1;
-                    NextY = -1;
-                }
-                else
-                {
-                    NextX = turn.SmallX;
-                    NextY = turn.SmallY;
-                }
-                Piece newBoardHolder = relevantSmallBoard.Winner;
+                UpdateNextPlayingSpot(turn);
                 // Board winner changed on this turn
-                if(formerBoardHolder != newBoardHolder) {
+                if(formerBoardHolder != newBoardHolder)
+                {
+                    ++SmallBoardsWon;
                     UpdateVictoryArray(turn);
-                    CheckVictory();
+                    CheckVictory(newBoardHolder);
                 }
             }
             return successful;
         }
 
-        private void CheckVictory()
+        private void UpdateNextPlayingSpot(Turn turn)
         {
-            if (Victor != null)
-                return;
-            if (SmallBoardsWon == RowSize*RowSize)
+            SmallBoard sentTo = SmallBoards[turn.SmallX, turn.SmallY];
+            if (sentTo.IsFull())
             {
-                Victor = Piece.Cat;
+                NextX = -1;
+                NextY = -1;
             }
             else
             {
-                foreach (int[] victoryArray in VictoryArrays)
-                {
-                    Victor = null;
-                }
+                NextX = turn.SmallX;
+                NextY = turn.SmallY;
+            }
+        }
+
+        private void CheckVictory(Piece currentPieceTurn)
+        {
+            if (Victor != null)
+                return;
+            if (SmallBoardsWon == NumberOfBoards)
+                Victor = Piece.Cat;
+            else
+            {
+                int[] victoryArray = VictoryArrays[currentPieceTurn];
+                if (victoryArray.Max() == RowSize)
+                    Victor = currentPieceTurn;
             }
         }
 
@@ -92,10 +96,10 @@ namespace tic_tac_schmoe.Logic
         {
             int[] victoryArray = VictoryArrays[turn.PlayingPiece];
             victoryArray[turn.BigX]++; // Updates Row
-            victoryArray[turn.BigY + RowSize]++;
-            if (turn.BigX == turn.BigY)
+            victoryArray[turn.BigY + RowSize]++; // Updates Columns
+            if (turn.BigX == turn.BigY) // Updates the TL-BR diagonal
                 victoryArray[2 * RowSize]++;
-            if (turn.BigX - RowSize == turn.BigY)
+            if (turn.BigX - RowSize == turn.BigY) // Updates the TR-BL diagonal
                 victoryArray[2 * RowSize + 1]++;
         }
     }
