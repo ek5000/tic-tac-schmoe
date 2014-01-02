@@ -18,10 +18,11 @@ namespace tic_tac_schmoe.Logic
 
         public SmallBoard(int rowSize)
         {
-            Board = new Piece[rowSize, rowSize];
-            RowSize = rowSize;
-            NumPiecesPlayed = 0;
-            VictoryArrays = new Dictionary<Piece, int[]>();
+            this.Board = new Piece[rowSize, rowSize];
+            this.RowSize = rowSize;
+            this.NumPiecesPlayed = 0;
+            this.VictoryArrays = new Dictionary<Piece, int[]>();
+            this.Victor = Piece.None;
 
             SetUpBoard(Board, rowSize);
             SetUpVictoryArrays(VictoryArrays, rowSize);
@@ -68,7 +69,7 @@ namespace tic_tac_schmoe.Logic
         }
         private void CheckVictory(Piece currentPieceTurn)
         {
-            if (Victor != null)
+            if (Victor != Piece.None)
                 return;
             if (NumPiecesPlayed == NumSpots)
                 Victor = Piece.Cat;

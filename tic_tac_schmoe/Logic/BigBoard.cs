@@ -27,6 +27,7 @@ namespace tic_tac_schmoe.Logic
             this.NextX = firstBoardX;
             this.NextY = firstBoardY;
             this.SmallBoardsWon = 0;
+            this.Victor = Piece.None;
 
             SetUpSmallBoards(this.SmallBoards, rowSize);
             SetUpVictoryArrays(this.VictoryArrays, rowSize);
@@ -80,7 +81,7 @@ namespace tic_tac_schmoe.Logic
 
         private void CheckVictory(Piece currentPieceTurn)
         {
-            if (Victor != null)
+            if (Victor != Piece.None)
                 return;
             if (SmallBoardsWon == NumberOfBoards)
                 Victor = Piece.Cat;
