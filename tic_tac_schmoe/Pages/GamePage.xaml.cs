@@ -172,9 +172,9 @@ namespace tic_tac_schmoe.Pages
         }
         private void setUpPlayers(string knot, string cross, string knoticon, string crossicon)
         {
-            Knot = new Player(knot, Piece.knot, brushes["knot"].Color, knoticon);
-            Cross = new Player(cross, Piece.cross, brushes["cross"].Color, crossicon);
-            Cat = new Player("cat", Piece.cat, brushes["cat"].Color, crossicon);
+            Knot = new Player(knot, Piece.Knot, Brushes["knot"].Color, knoticon);
+            Cross = new Player(cross, Piece.Cross, Brushes["cross"].Color, crossicon);
+            Cat = new Player("cat", Piece.Cat, Brushes["cat"].Color, crossicon);
         }
     }
 }
