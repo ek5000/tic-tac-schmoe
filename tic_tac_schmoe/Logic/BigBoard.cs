@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace tic_tac_schmoe.Logic
 {    
-    public class BigBoard
+    public class BigBoard : IBigBoard
     {
-        private Piece Victor { get; set; }
+        public Piece Victor { get; set; }
         private SmallBoard[,] SmallBoards { get; set; }
         private int RowSize { get; set; }
         private int NumberOfBoards { get { return RowSize * RowSize; } }
-        private Piece NextPieceTurn { get; set; }
-        private int NextX { get; set; }
-        private int NextY { get; set; }
+        public Piece NextPieceTurn { get; set; }
+        public int NextX { get; set; }
+        public int NextY { get; set; }
         private Dictionary<Piece, int[]> VictoryArrays { get; set; }
         private int SmallBoardsWon { get; set; }
 
@@ -32,6 +32,12 @@ namespace tic_tac_schmoe.Logic
             SetUpSmallBoards(this.SmallBoards, rowSize);
             SetUpVictoryArrays(this.VictoryArrays, rowSize);
         }
+
+        public SmallBoard this[int x, int y] { get { return SmallBoards[x, y]; } }
+
+        public Piece this[int w, int x, int y, int z] { get { return SmallBoards[w, x][y, z]; } }
+
+        public Piece this[Tuple<int, int, int, int> spot]{ get { return this[spot.Item1, spot.Item2, spot.Item3, spot.Item4]; } }
 
         private static void SetUpVictoryArrays(Dictionary<Piece, int[]> victoryArrays, int rowSize)
         {
@@ -100,7 +106,7 @@ namespace tic_tac_schmoe.Logic
             victoryArray[turn.BigY + RowSize]++; // Updates Columns
             if (turn.BigX == turn.BigY) // Updates the TL-BR diagonal
                 victoryArray[2 * RowSize]++;
-            if (turn.BigX - RowSize == turn.BigY) // Updates the TR-BL diagonal
+            if (turn.BigX - RowSize + 1 == turn.BigY) // Updates the TR-BL diagonal
                 victoryArray[2 * RowSize + 1]++;
         }
     }

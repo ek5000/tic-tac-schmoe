@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace tic_tac_schmoe.Logic
 {
-    class SmallBoard
+    public class SmallBoard
     {
         private Piece[,] Board { get; set; }
         private int RowSize { get; set; }
@@ -27,6 +27,13 @@ namespace tic_tac_schmoe.Logic
             SetUpBoard(Board, rowSize);
             SetUpVictoryArrays(VictoryArrays, rowSize);
         }
+
+        public Piece this[int x, int y]
+        {
+            get { return Board[x, y]; }
+            set { Board[x, y] = value; }
+        }
+
         private static void SetUpBoard(Piece[,] board, int rowSize)
         {
             for (int i = 0; i < rowSize; ++i)

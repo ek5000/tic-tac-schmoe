@@ -95,6 +95,7 @@
     </Compile>
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Logic\BigBoard.cs" />
+    <Compile Include="Logic\IBigBoard.cs" />
     <Compile Include="Logic\Piece.cs" />
     <Compile Include="Logic\Player.cs" />
     <Compile Include="Logic\SmallBoard.cs" />

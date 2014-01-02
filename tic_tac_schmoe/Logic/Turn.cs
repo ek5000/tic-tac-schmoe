@@ -26,5 +26,14 @@ namespace tic_tac_schmoe.Logic
             _SmallBoardY = smallBoardY;
             _PlayingPiece = playingPiece;
         }
+
+        public Turn(Tuple<int, int, int, int> CurrentSpot, Piece playingPiece)
+        {
+            _BigBoardX = CurrentSpot.Item1;
+            _BigBoardY = CurrentSpot.Item2;
+            _SmallBoardX = CurrentSpot.Item3;
+            _SmallBoardY = CurrentSpot.Item4;
+            _PlayingPiece = playingPiece;
+        }
     }
 }

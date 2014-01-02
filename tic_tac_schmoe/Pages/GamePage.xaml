@@ -21,11 +21,6 @@
             <TextBlock x:Name="StatusText" TextWrapping="NoWrap"
                        FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </ScrollViewer>
-        <TextBox x:Name="SaveNameText" HorizontalAlignment="Left" Height="80" Margin="10,-80,0,0" VerticalAlignment="Top" 
-                 Width="458" Background="White" Visibility="Visible" KeyDown="SaveNameText_KeyDown" LostFocus="SaveNameText_LostFocus"/>
-        <Image x:Name="Transparency" HorizontalAlignment="Left" Height="688" Source="/Images/Transparency.png" Margin="10,80,0,0"
-               VerticalAlignment="Top" Width="458" Visibility="Collapsed" Stretch="Fill"/>
-        <Button x:Name="LoseFocus" Content="Button" HorizontalAlignment="Left" Height="69" Margin="518,235,-89,0" VerticalAlignment="Top" Width="51"/>
     </Grid>
 
 </phone:PhoneApplicationPage>
