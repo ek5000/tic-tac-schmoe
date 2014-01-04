@@ -12,6 +12,7 @@ using System.Windows.Media;
 using tic_tac_schmoe.Logic;
 using System.Windows.Media.Imaging;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 
 namespace tic_tac_schmoe.Pages
 {
@@ -27,6 +28,7 @@ namespace tic_tac_schmoe.Pages
         int RowSize;
         IBigBoard board;
 
+        Storyboard Blink;
         Dictionary<Piece, Player> Players;
 
         public GamePage()
@@ -86,6 +88,7 @@ namespace tic_tac_schmoe.Pages
                 StatusText.Text = Players[board.NextPieceTurn].Name + "'s Turn";
             }
             CurrentSpot = new Tuple<int, int, int, int>(-1, -1, -1, -1);
+            BeginBlink();
         }
 
         protected void WinBigBoard(Player p)
@@ -129,6 +132,38 @@ namespace tic_tac_schmoe.Pages
                 return true;
             }
         }
+        protected void BeginBlink()
+        {
+            Blink.Stop();
+            Blink.Children.Clear();
+            if (board.NextX == -1) // All spots are available
+            {
+                for (int i = 0; i < 3; ++i)
+                    for (int j = 0; j < 3; ++j)
+                    {
+                        ColorAnimation c = new ColorAnimation();
+                        if (board[i, j].Victor != Piece.None)
+                            c.From = ThemeColors.LightenColor(Players[board[i, j].Victor].Color);
+                        else
+                            c.From = ThemeColors.LightenColor(ThemeColor);
+                        Storyboard.SetTarget(c, GridColors[i, j]);
+                        Blink.Children.Add(c);
+                    }
+            }
+            else
+            {
+                int i = board.NextX;
+                int j = board.NextY;
+                ColorAnimation c = new ColorAnimation();
+                if (board[i, j].Victor != Piece.None)
+                    c.From = ThemeColors.LightenColor(Players[board[i, j].Victor].Color);
+                else
+                    c.From = ThemeColors.LightenColor(ThemeColor);
+                Storyboard.SetTarget(c, GridColors[i, j]);
+                Blink.Children.Add(c);
+            }
+            Blink.Begin();
+        }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -168,6 +203,7 @@ namespace tic_tac_schmoe.Pages
             SetUpGame(rowsize);
             SetUpBigBoard();
             SetUpSmallBoards();
+            BeginBlink();
         }
         private void SetUpVariables(int rowSize = 3)
         {
@@ -178,6 +214,11 @@ namespace tic_tac_schmoe.Pages
             ThemeColor = (Color)Application.Current.Resources["PhoneAccentColor"];
             Spots = new Image[rowSize, rowSize, rowSize, rowSize];
             SpotColors = new Rectangle[rowSize, rowSize, rowSize, rowSize];
+            Blink = new Storyboard() {
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever,
+                Duration = new Duration(TimeSpan.FromMilliseconds(1500)) };
+            Storyboard.SetTargetProperty(Blink, new PropertyPath("(Shape.Fill).(SolidColorBrush.Color)"));
             RowSize = rowSize;
         }
         private void SetUpDefaultColors()

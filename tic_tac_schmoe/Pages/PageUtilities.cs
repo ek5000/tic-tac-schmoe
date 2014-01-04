@@ -96,6 +96,14 @@ namespace tic_tac_schmoe.Pages
         {
             return (Color)typeof(ThemeColors).GetField(color, System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).GetValue(null);
         }
+        public static Color LightenColor(Color input)
+        {
+            float correctionFactor = 0.75f;
+            float red = (255 - input.R) * correctionFactor + input.R;
+            float green = (255 - input.G) * correctionFactor + input.G;
+            float blue = (255 - input.B) * correctionFactor + input.B;
+            return Color.FromArgb(input.A, (byte)red, (byte)green, (byte)blue);
+        }
     }
 
     public class ColorItem
