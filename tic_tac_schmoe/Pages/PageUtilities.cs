@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace tic_tac_schmoe.Pages
 {
@@ -91,6 +95,79 @@ namespace tic_tac_schmoe.Pages
         public static Color StringToColor(string color)
         {
             return (Color)typeof(ThemeColors).GetField(color, System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).GetValue(null);
+        }
+    }
+
+    public class ColorItem
+    {
+        public SolidColorBrush color { get; set; }
+        public string colorName { get; set; }
+        public ColorItem(SolidColorBrush c, string cn)
+        {
+            color = c;
+            colorName = cn;
+        }
+        public override string ToString()
+        {
+            return colorName.Replace(' ', '_');
+        }
+    }
+    public class IconItem
+    {
+        public BitmapImage IconSource { get; set; }
+        public string IconName { get; set; }
+        public string IconUri { get; set; }
+        public SolidColorBrush IconColor { get; set; }
+        public IconItem(string iconUri, string iconName, string iconUriRelative, SolidColorBrush iconColor)
+        {
+            IconSource = new BitmapImage(new Uri(iconUri, UriKind.Absolute));
+            IconName = iconName;
+            IconUri = iconUriRelative;
+            IconColor = iconColor;
+        }
+        public override string ToString()
+        {
+            return IconUri;
+        }
+    }
+    public class ColorList : ObservableCollection<ColorItem>
+    {
+        public ColorList(Color phoneThemeColor, Color? otherPlayer = null)
+        {
+            var colors = typeof(ThemeColors).GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+            if (otherPlayer == null)
+            {
+                foreach (var color in colors)
+                {
+                    Color colorChoice = (Color)color.GetValue(null);
+                    if (ThemeColors.ColorDistance(colorChoice, phoneThemeColor) > 70)
+                        Add(new ColorItem(new SolidColorBrush((Color)color.GetValue(null)), color.Name.Replace("_", " ")));
+                }
+            }
+            else
+            {
+                foreach (var color in colors)
+                {
+                    Color colorChoice = (Color)color.GetValue(null);
+                    if (ThemeColors.ColorDistance(colorChoice, phoneThemeColor) > 70 && ThemeColors.ColorDistance(colorChoice, (Color)otherPlayer) > 70)
+                        Add(new ColorItem(new SolidColorBrush((Color)color.GetValue(null)), color.Name.Replace("_", " ")));
+                }
+            }
+
+        }
+    }
+    public class IconList : ObservableCollection<IconItem>
+    {
+        static string[] names = new string[] { "Circle", "Cross", "Windows", "Apple", "Android" };
+        public IconList(SolidColorBrush backgroundColor, string picked = "")
+        {
+            SolidColorBrush themeColor = new SolidColorBrush((Color)Application.Current.Resources["PhoneAccentColor"]);
+            string curDir = Directory.GetCurrentDirectory();
+            for (int i = 0; i < names.Length; ++i)
+            {
+                if (("/Images/Pieces/Piece" + i + ".png") != picked)
+                    Add(new IconItem(curDir + "/Images/Pieces/Piece" + i + ".png", names[i], "/Images/Pieces/Piece" + i + ".png", backgroundColor));
+            }
         }
     }
 }
