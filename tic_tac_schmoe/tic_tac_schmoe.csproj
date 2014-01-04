@@ -100,8 +100,8 @@
     <Compile Include="Logic\Player.cs" />
     <Compile Include="Logic\SmallBoard.cs" />
     <Compile Include="Logic\Turn.cs" />
-    <Compile Include="Pages\CrossPageSetup.xaml.cs">
-      <DependentUpon>CrossPageSetup.xaml</DependentUpon>
+    <Compile Include="Pages\CrossSetupPage.xaml.cs">
+      <DependentUpon>CrossSetupPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\GamePage.xaml.cs">
       <DependentUpon>GamePage.xaml</DependentUpon>
@@ -166,7 +166,6 @@
     <Content Include="Images\Pieces\Piece3.png" />
     <Content Include="Images\Pieces\Piece4.png" />
     <Content Include="Images\Transparency.png" />
-    <Content Include="README_FIRST.txt" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\AppResources.resx">
@@ -175,7 +174,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Pages\CrossPageSetup.xaml">
+    <Page Include="Pages\CrossSetupPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
