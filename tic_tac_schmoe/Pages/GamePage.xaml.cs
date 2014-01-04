@@ -151,7 +151,19 @@ namespace tic_tac_schmoe.Pages
             int rowsize = int.Parse(rowSizeString);
 
             SetUpVariables(rowsize);
-            SetUpDefaultColors();
+            #region SetUpColors();
+            string knotColor, crossColor;
+            if (NavigationContext.QueryString.TryGetValue("knotcolor", out knotColor))
+            {
+                //Also remove the last 2 pages, since they're the setup pages.
+                NavigationService.RemoveBackEntry();
+                NavigationService.RemoveBackEntry();
+                NavigationContext.QueryString.TryGetValue("crosscolor", out crossColor);
+                SetUpColors(knotColor, crossColor);
+            }
+            else
+                SetUpDefaultColors();
+            #endregion
             SetUpPlayers(knotname, crossname, knoticon, crossicon);
             SetUpGame(rowsize);
             SetUpBigBoard();
