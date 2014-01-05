@@ -106,7 +106,9 @@ namespace tic_tac_schmoe.Logic
             victoryArray[turn.BigY + RowSize]++; // Updates Columns
             if (turn.BigX == turn.BigY) // Updates the TL-BR diagonal
                 victoryArray[2 * RowSize]++;
-            if (turn.BigX - RowSize + 1 == turn.BigY) // Updates the TR-BL diagonal
+            if (turn.BigX - RowSize + 1 == turn.BigY ||
+                turn.BigY - RowSize + 1 == turn.BigX ||
+                turn.BigX == turn.BigY) // Updates the TR-BL diagonal
                 victoryArray[2 * RowSize + 1]++;
         }
     }
