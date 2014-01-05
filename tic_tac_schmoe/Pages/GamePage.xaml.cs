@@ -64,7 +64,15 @@ namespace tic_tac_schmoe.Pages
 
         private void ResetPress(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            MessageBoxResult result =
+                MessageBox.Show("This will reset the entire board, and a new game will begin.",
+                "Are You Sure?", MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.OK)
+            {
+                SetUpGame(RowSize);
+                ResetBoardState();
+                BeginBlink();
+            }
         }
 
         private void AcceptPress(object sender, EventArgs e)
@@ -414,6 +422,24 @@ namespace tic_tac_schmoe.Pages
                 default:
                     return new BitmapImage();
             }
+        }
+
+        private void ResetBoardState()
+        {
+            for (int w = 0; w < 3; ++w)
+                for (int x = 0; x < 3; ++x)
+                {
+                    for (int y = 0; y < 3; ++y)
+                        for (int z = 0; z < 3; ++z)
+                        {
+                            SpotColors[w, x, y, z].Fill = Brushes["black"];
+                            Spots[w, x, y, z].Source = new BitmapImage();
+                            Canvas.SetZIndex(SpotColors[w, x, y, z], 50);
+                            Canvas.SetZIndex(Spots[w, x, y, z], 150);
+                        }
+                    GridColors[w, x].Fill = Brushes["theme"];
+
+                }
         }
     }
 }
