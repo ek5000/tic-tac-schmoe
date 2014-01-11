@@ -8,19 +8,32 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Windows.Networking.Proximity;
 
 namespace tic_tac_schmoe.Pages
 {
     public class ListItem
     {
-        public String name { get; set; }
-        public String details { get; set; }
-        public String id { get; set; }
+        public string name { get; set; }
+        public string details { get; set; }
+        public string id { get; set; }
         public ListItem(string n, string d, string i)
         {
             name = n;
             details = d;
             id = i;
+        }
+    }
+
+    public class PeerItem
+    {
+        public string Name { get; private set; }
+        public PeerInformation PeerInformation { get; private set; }
+
+        public PeerItem(PeerInformation peerInformation)
+        {
+            this.Name = peerInformation.DisplayName;
+            this.PeerInformation = peerInformation;
         }
     }
     

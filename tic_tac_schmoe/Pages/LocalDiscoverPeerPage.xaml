@@ -31,12 +31,20 @@
             <Popup IsOpen="False">
                 <RadioButton Content=""/>
             </Popup>
-            <Button x:Name="StartServerButton" Content="Start Server" HorizontalAlignment="Left" Margin="131,10,0,0" VerticalAlignment="Top" Tap="StartServerButton_Tap"/>
-            <Button x:Name="FindServersButton" Content="Find Servers" HorizontalAlignment="Left" Margin="126,82,0,0" VerticalAlignment="Top" Tap="FindServersButton_Tap"/>
+            <Button x:Name="StartServerButton" Content="Start Server" HorizontalAlignment="Left" Margin="-10,287,0,0" VerticalAlignment="Top" Tap="StartServerButton_Tap"/>
+            <Button x:Name="FindServersButton" Content="Find Servers" HorizontalAlignment="Left" Margin="280,521,0,0" VerticalAlignment="Top" Tap="FindServersButton_Tap"/>
             <TextBlock x:Name="MessageTextBlock" HorizontalAlignment="Left" Margin="10,364,0,0" TextWrapping="Wrap" Text="Message Box" VerticalAlignment="Top" Height="75" Width="176"/>
-            <Button x:Name="AcceptIncomingButton" Content="Accept Incoming" HorizontalAlignment="Left" Margin="131,154,0,0" VerticalAlignment="Top" Tap="AcceptIncomingButton_Tap"/>
+            <Button x:Name="AcceptIncomingButton" Content="Accept Incoming" HorizontalAlignment="Left" Margin="0,521,0,0" VerticalAlignment="Top" Tap="AcceptIncomingButton_Tap"/>
             <TextBox x:Name="SendingTextBox" HorizontalAlignment="Left" Height="72" Margin="0,444,0,0" TextWrapping="Wrap" Text="Sending Box" VerticalAlignment="Top" Width="456"/>
-            <Button x:Name="SendMessageButton" Content="Send Message" HorizontalAlignment="Left" Margin="126,226,0,0" VerticalAlignment="Top" Tap="SendMessageButton_Tap"/>
+            <Button x:Name="SendMessageButton" Content="Send Message" HorizontalAlignment="Left" Margin="166,287,0,0" VerticalAlignment="Top" Tap="SendMessageButton_Tap"/>
+            <ListBox x:Name="FoundPeerList" HorizontalAlignment="Left" Height="272" Margin="10,10,0,0" VerticalAlignment="Top" Width="436"
+                     Tap="FoundPeerList_Tap">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" FontSize="{StaticResource PhoneFontSizeMedium}" Margin="40,0,0,0"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
     </Grid>
 

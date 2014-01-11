@@ -12,12 +12,13 @@ using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
 using System.Threading.Tasks;
 using tic_tac_schmoe.Resources;
+using System.Collections.ObjectModel;
 
 namespace tic_tac_schmoe.Pages
 {
     public partial class LocalDiscoverPeerPage : PhoneApplicationPage
     {
-        StreamSocket socket;
+        ObservableCollection<PeerItem> peerListBacking;
         PeerInformation requestingPeer;
 
         DataReader dataReader;
@@ -36,9 +37,13 @@ namespace tic_tac_schmoe.Pages
         private async void FindServersButton_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             var peers = await PeerFinder.FindAllPeersAsync();
+            peerListBacking.Clear();
             if (peers.Count > 0)
             {
-                ConnectToPeer(peers[0]);
+                foreach (PeerInformation peer in peers)
+                {
+                    peerListBacking.Add(new PeerItem(peer));
+                }
             }
         }
         private void AcceptIncomingButton_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -52,7 +57,7 @@ namespace tic_tac_schmoe.Pages
         private async void SendMessageButton_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (dataWriter == null)
-                dataWriter = new DataWriter(socket.OutputStream);
+                dataWriter = new DataWriter(App.Socket.OutputStream);
 
             string message = SendingTextBox.Text;
             dataWriter.WriteInt32(message.Length);
@@ -65,7 +70,7 @@ namespace tic_tac_schmoe.Pages
         private async void ConnectToPeer(PeerInformation peerInfo)
         {
             StreamSocket socket = await PeerFinder.ConnectAsync(peerInfo);
-            this.socket = socket;
+            App.Socket = socket;
             requestingPeer = null;
             ListenForIncomingMessage();
         }
@@ -107,7 +112,7 @@ namespace tic_tac_schmoe.Pages
         private async Task<string> GetMessage()
         {
             if (dataReader == null)
-                dataReader = new DataReader(socket.InputStream);
+                dataReader = new DataReader(App.Socket.InputStream);
 
             // Each message is sent in two blocks.
             // The first is the size of the message.
@@ -122,8 +127,10 @@ namespace tic_tac_schmoe.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
             PeerFinder.ConnectionRequested += ConnectionRequested;
+
+            peerListBacking = new ObservableCollection<PeerItem>();
+            FoundPeerList.ItemsSource = peerListBacking;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -149,13 +156,22 @@ namespace tic_tac_schmoe.Pages
                 dataWriter = null;
             }
 
-            if (socket != null)
+            if (App.Socket != null)
             {
-                socket.Dispose();
-                socket = null;
+                App.Socket.Dispose();
+                App.Socket = null;
             }
 
             PeerFinder.Stop();
+        }
+
+        private void FoundPeerList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PeerItem selected = (PeerItem)FoundPeerList.SelectedItem;
+            if (selected != null)
+            {
+                ConnectToPeer(selected.PeerInformation);
+            }
         }
 
     }

@@ -7,6 +7,7 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using tic_tac_schmoe.Resources;
+using Windows.Networking.Sockets;
 
 namespace tic_tac_schmoe
 {
@@ -17,6 +18,8 @@ namespace tic_tac_schmoe
         /// </summary>
         /// <returns>The root frame of the Phone Application.</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
+
+        public static StreamSocket Socket { get; set; }
 
         /// <summary>
         /// Constructor for the Application object.
