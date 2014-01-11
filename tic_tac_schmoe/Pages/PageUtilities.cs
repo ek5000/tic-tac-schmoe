@@ -202,6 +202,7 @@ namespace tic_tac_schmoe.Pages
         public string CrossIcon { get; set; }
         public int RowSize { get; set; }
         public bool QuickGame { get; set; }
+        public bool BluetoothGame { get; set; }
 
         public GameInfo()
         {
@@ -213,6 +214,7 @@ namespace tic_tac_schmoe.Pages
             CrossIcon = "/Images/Pieces/Piece1.png";
             RowSize = 3;
             QuickGame = false;
+            BluetoothGame = false;
         }
     }
 }

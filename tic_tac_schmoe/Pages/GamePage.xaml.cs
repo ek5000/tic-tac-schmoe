@@ -178,8 +178,12 @@ namespace tic_tac_schmoe.Pages
         {
             base.OnNavigatedTo(e);
             string gameInfoString;
+            GameInfo gameInfo;
             NavigationContext.QueryString.TryGetValue("gameinfo", out gameInfoString);
-            GameInfo gameInfo = JsonConvert.DeserializeObject<GameInfo>(gameInfoString);
+            if (gameInfoString != null)
+                gameInfo = JsonConvert.DeserializeObject<GameInfo>(gameInfoString);
+            else
+                gameInfo = new GameInfo() { QuickGame = true };
             string knotname = gameInfo.KnotName;
             string crossname = gameInfo.CrossName;
             string knoticon = gameInfo.KnotIcon;

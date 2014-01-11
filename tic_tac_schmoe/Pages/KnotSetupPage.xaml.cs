@@ -14,6 +14,7 @@ namespace tic_tac_schmoe.Pages
 {
     public partial class KnotSetupPage : PhoneApplicationPage
     {
+        private bool BluetoothGame { get; set; }
         public KnotSetupPage()
         {
             InitializeComponent();
@@ -48,19 +49,33 @@ namespace tic_tac_schmoe.Pages
                 "Confirm", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.OK)
             {
-                //string navigation = String.Format("/Pages/CrossSetupPage.xaml?knotname={0}&knotcolor={1}&knoticon={2}",
-                //                            Uri.EscapeUriString(KnotName.Text),
-                //                            Uri.EscapeUriString(ColorPicker.SelectedItem.ToString()),
-                //                            Uri.EscapeUriString("&knoticon=" + IconPicker.SelectedItem.ToString()));
-                GameInfo gameInfo = new GameInfo() {
+                GameInfo gameInfo = new GameInfo()
+                {
                     KnotColor = ColorPicker.SelectedItem.ToString(),
                     KnotIcon = IconPicker.SelectedItem.ToString(),
-                    KnotName = KnotName.Text };
+                    KnotName = KnotName.Text,
+                    BluetoothGame = BluetoothGame
+                };
                 string gameInfoString = JsonConvert.SerializeObject(gameInfo);
-                string navigation = String.Format("/Pages/CrossSetupPage.xaml?gameinfo={0}",
-                    Uri.EscapeUriString(gameInfoString));
-                NavigationService.Navigate(new Uri(navigation, UriKind.Relative));
+                if (BluetoothGame)
+                {
+                    // Send message that we're done, here's our info
+                    // Wait for response
+                    // Go to game screen with our modified GameInfo object
+                }
+                else
+                {
+                    string navigation = String.Format("/Pages/CrossSetupPage.xaml?gameinfo={0}",
+                        Uri.EscapeUriString(gameInfoString));
+                    NavigationService.Navigate(new Uri(navigation, UriKind.Relative));
+                }
             }
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            BluetoothGame = NavigationContext.QueryString.ContainsKey("bluetooth");
         }
     }
     

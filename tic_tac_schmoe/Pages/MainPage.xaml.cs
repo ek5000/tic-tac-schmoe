@@ -29,10 +29,7 @@ namespace tic_tac_schmoe.Pages
             switch (selection.id)
             {
                 case "locals_quick":
-                    GameInfo gameInfo = new GameInfo() { QuickGame = true };
-                    string gameInfoString = JsonConvert.SerializeObject(gameInfo);
-                    string uri = String.Format("/Pages/GamePage.xaml?gameinfo={0}", gameInfoString);
-                    NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+                    NavigationService.Navigate(new Uri("/Pages/GamePage.xaml", UriKind.Relative));
                     break;
                 case "locals_standard":
                     NavigationService.Navigate(new Uri("/Pages/KnotSetupPage.xaml", UriKind.Relative));

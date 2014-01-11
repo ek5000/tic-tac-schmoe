@@ -19,23 +19,35 @@ namespace tic_tac_schmoe.Pages
     public partial class LocalDiscoverPeerPage : PhoneApplicationPage
     {
         ObservableCollection<PeerItem> peerListBacking;
-        PeerInformation requestingPeer;
 
         DataReader dataReader;
         DataWriter dataWriter;
         public LocalDiscoverPeerPage()
         {
             InitializeComponent();
+            BuildApplicationBar();
+        }
+        private void BuildApplicationBar()
+        {
+            ApplicationBar = new ApplicationBar();
+
+            ApplicationBarIconButton refreshButton = new ApplicationBarIconButton(new Uri("/Images/AppBar/reset.png", UriKind.Relative));
+            refreshButton.Text = "Refresh";
+            refreshButton.Click += RefreshPress;
+            ApplicationBar.Buttons.Add(refreshButton);
+            // Create a new menu item with the localized string from AppResources.
+            ApplicationBarMenuItem appBarMenuItem = new ApplicationBarMenuItem("Dunno Yet");
+            ApplicationBar.MenuItems.Add(appBarMenuItem);
         }
 
-        private void StartServerButton_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private async void RefreshPress(object sender, EventArgs e)
+        {
+            await LookForConnection();
+        }
+        private async Task LookForConnection()
         {
             PeerFinder.DisplayName = "Test";
             PeerFinder.Start();
-        }
-
-        private async void FindServersButton_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
             var peers = await PeerFinder.FindAllPeersAsync();
             peerListBacking.Clear();
             if (peers.Count > 0)
@@ -44,13 +56,6 @@ namespace tic_tac_schmoe.Pages
                 {
                     peerListBacking.Add(new PeerItem(peer));
                 }
-            }
-        }
-        private void AcceptIncomingButton_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (requestingPeer != null)
-            {
-                ConnectToPeer(requestingPeer);
             }
         }
 
@@ -71,7 +76,6 @@ namespace tic_tac_schmoe.Pages
         {
             StreamSocket socket = await PeerFinder.ConnectAsync(peerInfo);
             App.Socket = socket;
-            requestingPeer = null;
             ListenForIncomingMessage();
         }
 
@@ -124,13 +128,14 @@ namespace tic_tac_schmoe.Pages
             return dataReader.ReadString(messageLen);
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             PeerFinder.ConnectionRequested += ConnectionRequested;
 
             peerListBacking = new ObservableCollection<PeerItem>();
             FoundPeerList.ItemsSource = peerListBacking;
+            await LookForConnection();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -156,11 +161,11 @@ namespace tic_tac_schmoe.Pages
                 dataWriter = null;
             }
 
-            if (App.Socket != null)
-            {
-                App.Socket.Dispose();
-                App.Socket = null;
-            }
+            //if (App.Socket != null)
+            //{
+            //    App.Socket.Dispose();
+            //    App.Socket = null;
+            //}
 
             PeerFinder.Stop();
         }
