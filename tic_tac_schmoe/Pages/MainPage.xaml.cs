@@ -37,7 +37,7 @@ namespace tic_tac_schmoe.Pages
                     NavigationService.Navigate(new Uri("/Pages/SavedGamePage.xaml", UriKind.Relative));
                     break;
                 case "locals_bluetooth":
-                    NavigationService.Navigate(new Uri("/Pages/MultiplayerGamePage.xaml", UriKind.Relative));
+                    NavigationService.Navigate(new Uri("/Pages/LocalDiscoverPeerPage.xaml", UriKind.Relative));
                     break;
             }
         }
