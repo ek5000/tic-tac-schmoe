@@ -13,6 +13,7 @@ using tic_tac_schmoe.Logic;
 using System.Windows.Media.Imaging;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using Newtonsoft.Json;
 
 namespace tic_tac_schmoe.Pages
 {
@@ -176,33 +177,23 @@ namespace tic_tac_schmoe.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            string knotname, crossname;
-            NavigationContext.QueryString.TryGetValue("knotname", out knotname);
-            NavigationContext.QueryString.TryGetValue("crossname", out crossname);
-            knotname = knotname ?? "Knot";
-            crossname = crossname ?? "Cross";
-
-            string knoticon, crossicon;
-            NavigationContext.QueryString.TryGetValue("knoticon", out knoticon);
-            NavigationContext.QueryString.TryGetValue("crossicon", out crossicon);
-            knoticon = knoticon ?? "/Images/Pieces/Piece0.png";
-            crossicon = crossicon ?? "/Images/Pieces/Piece1.png";
-
-            string rowSizeString;
-            NavigationContext.QueryString.TryGetValue("rowsize", out rowSizeString);
-            rowSizeString = rowSizeString ?? "3";
-            int rowsize = int.Parse(rowSizeString);
+            string gameInfoString;
+            NavigationContext.QueryString.TryGetValue("gameinfo", out gameInfoString);
+            GameInfo gameInfo = JsonConvert.DeserializeObject<GameInfo>(gameInfoString);
+            string knotname = gameInfo.KnotName;
+            string crossname = gameInfo.CrossName;
+            string knoticon = gameInfo.KnotIcon;
+            string crossicon = gameInfo.CrossIcon;
+            int rowsize = gameInfo.RowSize;
 
             SetUpVariables(rowsize);
             #region SetUpColors();
-            string knotColor, crossColor;
-            if (NavigationContext.QueryString.TryGetValue("knotcolor", out knotColor))
+            if (!gameInfo.QuickGame)
             {
                 //Also remove the last 2 pages, since they're the setup pages.
                 NavigationService.RemoveBackEntry();
                 NavigationService.RemoveBackEntry();
-                NavigationContext.QueryString.TryGetValue("crosscolor", out crossColor);
-                SetUpColors(knotColor, crossColor);
+                SetUpColors(gameInfo.KnotColor, gameInfo.CrossColor);
             }
             else
                 SetUpDefaultColors();

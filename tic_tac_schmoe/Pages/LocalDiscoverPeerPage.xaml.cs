@@ -26,20 +26,6 @@ namespace tic_tac_schmoe.Pages
         {
             InitializeComponent();
         }
-        async void AppToApp()
-        {
-            PeerFinder.Start();
-            var peers = await PeerFinder.FindAllPeersAsync();
-
-            if (peers.Count == 0)
-            {
-                //TODO: No peers found, tell the user
-            }
-            else
-            {
-                PeerInformation selectedPeer = peers[0];
-            }
-        }
 
         private void StartServerButton_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -157,11 +143,11 @@ namespace tic_tac_schmoe.Pages
                 dataReader = null;
             }
 
-            //if (_dataWriter != null)
-            //{
-            //    _dataWriter.Dispose();
-            //    _dataWriter = null;
-            //}
+            if (dataWriter != null)
+            {
+                dataWriter.Dispose();
+                dataWriter = null;
+            }
 
             if (socket != null)
             {

@@ -178,4 +178,28 @@ namespace tic_tac_schmoe.Pages
             }
         }
     }
+
+    public class GameInfo
+    {
+        public string KnotName { get; set; }
+        public string KnotColor { get; set; }
+        public string KnotIcon { get; set; }
+        public string CrossName { get; set; }
+        public string CrossColor { get; set; }
+        public string CrossIcon { get; set; }
+        public int RowSize { get; set; }
+        public bool QuickGame { get; set; }
+
+        public GameInfo()
+        {
+            KnotName = "Knot";
+            KnotColor = null;
+            KnotIcon = "/Images/Pieces/Piece0.png";
+            CrossName = "Cross";
+            CrossColor = null;
+            CrossIcon = "/Images/Pieces/Piece1.png";
+            RowSize = 3;
+            QuickGame = false;
+        }
+    }
 }

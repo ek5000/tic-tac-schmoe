@@ -8,19 +8,18 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Windows.Media;
+using Newtonsoft.Json;
 
 namespace tic_tac_schmoe.Pages
 {
     public partial class CrossSetupPage : PhoneApplicationPage
     {
-        private string KnotName;
-        private string KnotColor;
-        private string KnotIcon;
+        private GameInfo gameInfo;
+
         public CrossSetupPage()
         {
             InitializeComponent();
             BuildApplicationBar();
-            IconPicker.ItemsSource = new IconList(new SolidColorBrush(), KnotIcon);
         }
         private void BuildApplicationBar()
         {
@@ -37,7 +36,7 @@ namespace tic_tac_schmoe.Pages
         void ColorPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int selected = IconPicker.SelectedIndex;
-            IconPicker.ItemsSource = new IconList(((ColorItem)ColorPicker.SelectedItem).color, KnotIcon);
+            IconPicker.ItemsSource = new IconList(((ColorItem)ColorPicker.SelectedItem).color, gameInfo.KnotIcon);
             IconPicker.SelectedIndex = selected;
         }
         private void AcceptPress(object sender, EventArgs e)
@@ -45,25 +44,30 @@ namespace tic_tac_schmoe.Pages
             MessageBoxResult result =
                 MessageBox.Show("Do you accept these settings?",
                 "Confirm", MessageBoxButton.OKCancel);
-            string uri = "/Pages/GamePage.xaml?knotname=" + KnotName + "&knotcolor=" + KnotColor + "&knoticon=" + KnotIcon +
-                                                   "&crossname=" + CrossName.Text + "&crosscolor=" + ColorPicker.SelectedItem.ToString() + "&crossicon=" + IconPicker.SelectedItem.ToString();
             if (result == MessageBoxResult.OK)
             {
+                gameInfo.CrossColor = ColorPicker.SelectedItem.ToString();
+                gameInfo.CrossIcon = IconPicker.SelectedItem.ToString();
+                gameInfo.CrossName = CrossName.Text;
+                string gameInfoString = JsonConvert.SerializeObject(gameInfo);
+                string uri = String.Format("/Pages/GamePage.xaml?gameinfo={0}",
+                    Uri.EscapeUriString(gameInfoString));
                 NavigationService.Navigate(new Uri(uri, UriKind.Relative));
             }
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            NavigationContext.QueryString.TryGetValue("knotname", out KnotName);
-            NavigationContext.QueryString.TryGetValue("knotcolor", out KnotColor);
-            NavigationContext.QueryString.TryGetValue("knoticon", out KnotIcon);
+            string gameInfoString;
+            NavigationContext.QueryString.TryGetValue("gameinfo", out gameInfoString);
+            gameInfo = JsonConvert.DeserializeObject<GameInfo>(gameInfoString);
             if (e.NavigationMode == NavigationMode.New)
             {
-                ColorPicker.ItemsSource = new ColorList((Color)Application.Current.Resources["PhoneAccentColor"], ThemeColors.StringToColor(KnotColor));
+                ColorPicker.ItemsSource = new ColorList((Color)Application.Current.Resources["PhoneAccentColor"],
+                    ThemeColors.StringToColor(gameInfo.KnotColor));
                 ColorPicker.SelectionChanged += ColorPicker_SelectionChanged;
             }
+            IconPicker.ItemsSource = new IconList(new SolidColorBrush(), gameInfo.KnotIcon);
         }
     }
 }

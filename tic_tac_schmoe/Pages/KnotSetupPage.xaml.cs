@@ -8,6 +8,7 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Windows.Media;
+using Newtonsoft.Json;
 
 namespace tic_tac_schmoe.Pages
 {
@@ -45,9 +46,19 @@ namespace tic_tac_schmoe.Pages
             MessageBoxResult result =
                 MessageBox.Show("Do you accept these settings?",
                 "Confirm", MessageBoxButton.OKCancel);
-            string navigation = "/Pages/CrossSetupPage.xaml?knotname=" + KnotName.Text + "&knotcolor=" + ColorPicker.SelectedItem.ToString() + "&knoticon=" + IconPicker.SelectedItem.ToString();
             if (result == MessageBoxResult.OK)
             {
+                //string navigation = String.Format("/Pages/CrossSetupPage.xaml?knotname={0}&knotcolor={1}&knoticon={2}",
+                //                            Uri.EscapeUriString(KnotName.Text),
+                //                            Uri.EscapeUriString(ColorPicker.SelectedItem.ToString()),
+                //                            Uri.EscapeUriString("&knoticon=" + IconPicker.SelectedItem.ToString()));
+                GameInfo gameInfo = new GameInfo() {
+                    KnotColor = ColorPicker.SelectedItem.ToString(),
+                    KnotIcon = IconPicker.SelectedItem.ToString(),
+                    KnotName = KnotName.Text };
+                string gameInfoString = JsonConvert.SerializeObject(gameInfo);
+                string navigation = String.Format("/Pages/CrossSetupPage.xaml?gameinfo={0}",
+                    Uri.EscapeUriString(gameInfoString));
                 NavigationService.Navigate(new Uri(navigation, UriKind.Relative));
             }
         }
